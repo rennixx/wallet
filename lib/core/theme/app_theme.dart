@@ -63,7 +63,7 @@ final ThemeData appTheme = ThemeData(
       color: Color(0xFFB0B0B0),
     ),
   ),
-  cardTheme: CardTheme(
+  cardTheme: CardThemeData(
     color: const Color(0x1AFFFFFF),
     elevation: 0,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
