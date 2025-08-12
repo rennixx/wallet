@@ -28,7 +28,9 @@ jobs:
         run: sudo xcode-select -s /Applications/Xcode_15.2.app
 
       - name: Build IPA (unsigned)
-        run: flutter build ipa --release --no-codesign
+        run: |
+          flutter build ipa --release --no-codesign
+          xcodebuild -exportArchive -archivePath build/ios/archive/Runner.xcarchive -exportPath build/ios/ipa -exportOptionsPlist ios/Runner/ExportOptions.plist
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
