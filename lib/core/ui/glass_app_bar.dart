@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'dart:html' as html;
+import 'package:wallet/core/ui/web_history_back_stub.dart'
+    if (dart.library.html) 'package:wallet/core/ui/web_history_back.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wallet/core/ui/glass_container.dart';
@@ -26,37 +27,36 @@ class GlassAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final leading =
-        automaticallyImplyLeading
-            ? IconButton(
-              icon: const Icon(
-                Icons.arrow_back_ios_new_rounded,
-                color: Colors.white,
-                size: 22,
-              ),
-              onPressed:
-                  onBackButtonPressed ??
-                  () async {
-                    bool popped = false;
+    final leading = automaticallyImplyLeading
+        ? IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Colors.white,
+              size: 22,
+            ),
+            onPressed:
+                onBackButtonPressed ??
+                () async {
+                  bool popped = false;
+                  try {
+                    context.pop();
+                    popped = true;
+                  } catch (_) {}
+                  if (!popped) {
                     try {
-                      context.pop();
-                      popped = true;
+                      popped = await Navigator.of(context).maybePop();
                     } catch (_) {}
-                    if (!popped) {
-                      try {
-                        popped = await Navigator.of(context).maybePop();
-                      } catch (_) {}
-                    }
-                    // Web fallback: use browser history
-                    if (!popped && kIsWeb) {
-                      try {
-                        html.window.history.back();
-                      } catch (_) {}
-                    }
-                  },
-              splashRadius: 22,
-            )
-            : null;
+                  }
+                  // Web fallback: use browser history
+                  if (!popped && kIsWeb) {
+                    try {
+                      webHistoryBack();
+                    } catch (_) {}
+                  }
+                },
+            splashRadius: 22,
+          )
+        : null;
     return Stack(
       children: [
         GlassContainer(
